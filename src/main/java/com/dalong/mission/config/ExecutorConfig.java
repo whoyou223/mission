@@ -3,10 +3,7 @@ package com.dalong.mission.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 线程池
@@ -20,8 +17,16 @@ public class ExecutorConfig {
 
     @Bean
     public ExecutorService executorService(){
-        return new ThreadPoolExecutor(50, 300,
-                30L, TimeUnit.SECONDS,
-                new SynchronousQueue<>());
+        return new ThreadPoolExecutor(50, 400,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>());
+    }
+
+    @Bean
+    public ThreadPoolExecutor linkedExecutor(){
+        int n = Runtime.getRuntime().availableProcessors();
+        int pooSize = 15 * n;
+        return new ThreadPoolExecutor(pooSize, 3 * pooSize, 60L,
+                TimeUnit.SECONDS, new LinkedBlockingDeque<>(2048));
     }
 }
